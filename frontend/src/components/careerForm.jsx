@@ -19,6 +19,8 @@ import {
   Users as TeamIcon,
   Settings,
   Hammer,
+  Target,
+  ChevronRight,
 } from "lucide-react";
 
 const CareerForm = () => {
@@ -299,103 +301,128 @@ const CareerForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-8">
-      <div className="max-w-2xl mx-auto  shadow-md rounded-md shadow-cyan-950 p-10  transition-all duration-1000">
-        <div>
-          <div className="text-3xl font-bold text-center text-gray-800">
-            Career Assessment Form
-          </div>
-          <div className="text-center text-gray-600">
-            Let&apos;s find the perfect career path for you
-          </div>
-        </div>
-        <div className="transition-all duration-1000">
-          {success ? (
-            <div className="bg-green-100 text-green-700 p-4 rounded-md mt-4">
-              Form submitted successfully!
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 p-8 pt-[90px]">
+      <div className="max-w-2xl mx-auto">
+        <div className="bg-gray-800/50 backdrop-blur-md rounded-2xl border border-gray-700 p-10 shadow-xl shadow-blue-500/5 transition-all duration-1000">
+          <div className="mb-8">
+            <div className="flex items-center justify-center space-x-3 mb-4">
+              <Brain className="w-8 h-8 text-blue-400" />
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 text-transparent bg-clip-text">
+                Career Assessment
+              </h1>
             </div>
-          ) : (
-            <div className="bg-red-100 text-red-700 p-4 rounded-md mt-4">
-              {error}
+            <div className="text-center text-gray-400">
+              Let&apos;s discover your perfect tech career path using AI
             </div>
-          )}
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-6  h-[70vh] overflow-auto p-5 transition-all duration-1000"
-          >
-            {formFields.map((field, index) => (
-              <div
-                key={field.name}
-                className={`transition-all duration-700 ease-out transform ${
-                  index <= currentStep
-                    ? "translate-y-0 opacity-100 scale-100"
-                    : "translate-y-20 opacity-0 scale-95 hidden"
-                }`}
-              >
-                <div className="flex items-center space-x-2 mb-2">
-                  {field.icon}
-                  <p className="text-sm font-medium text-gray-900">
-                    {field.label}
-                  </p>
-                </div>
+          </div>
 
-                {field.type === "text" ? (
-                  <div>
-                    <input
-                      type="text"
-                      className="w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder={field.placeholder}
-                      value={formData[field.name]}
-                      onChange={(e) => handleChange(field.name, e.target.value)}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => formData.name && setCurrentStep(1)}
-                      className="mt-2 bg-cyan-950 p-2 text-white font-semibold rounded-md flex flex-row"
-                    >
-                      Continue
-                    </button>
-                  </div>
-                ) : (
-                  <select
-                    value={formData[field.name]}
-                    onChange={(e) => handleChange(field.name, e.target.value)}
-                    className="w-full py-2 bg-gray-100 rounded-md"
-                  >
-                    <option value="" disabled>
-                      {`Select ${field.label}`}
-                    </option>
-                    {field.options.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </select>
-                )}
+          <div className="transition-all duration-1000">
+            {success ? (
+              <div className="bg-green-900/50 text-green-400 p-4 rounded-xl mt-4 border border-green-700">
+                Assessment submitted successfully! We&apos;ll analyze your
+                profile and provide recommendations shortly.
               </div>
-            ))}
+            ) : error ? (
+              <div className="bg-red-900/50 text-red-400 p-4 rounded-xl mt-4 border border-red-700">
+                {error}
+              </div>
+            ) : null}
 
-            {currentStep === formFields.length - 1 && (
-              <button
-                type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-2 px-4 rounded-md transition-all duration-300 transform hover:scale-105"
-              >
-                Submit Assessment
-              </button>
-            )}
-          </form>
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-6 h-[60vh] overflow-auto p-5 transition-all duration-1000 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800"
+            >
+              {formFields.map((field, index) => (
+                <div
+                  key={field.name}
+                  className={`transition-all duration-700 ease-out transform ${
+                    index <= currentStep
+                      ? "translate-y-0 opacity-100 scale-100"
+                      : "translate-y-20 opacity-0 scale-95 hidden"
+                  }`}
+                >
+                  <div className="flex items-center space-x-3 mb-3 text-white">
+                    {field.icon}
+                    <p className="text-sm font-medium text-gray-300">
+                      {field.label}
+                    </p>
+                  </div>
 
-          <div className="mt-4 flex justify-between items-center">
-            <span className="text-sm text-gray-500">
-              Step {currentStep + 1} of {formFields.length}
-            </span>
-            <div className="w-64 h-2 bg-gray-200 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 transition-all duration-300"
-                style={{
-                  width: `${((currentStep + 1) / formFields.length) * 100}%`,
-                }}
-              />
+                  {field.type === "text" ? (
+                    <div className="space-y-3">
+                      <input
+                        type="text"
+                        className="w-full p-3 bg-gray-900/50 border border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white transition-all duration-300"
+                        placeholder={field.placeholder}
+                        value={formData[field.name] || ""}
+                        onChange={(e) =>
+                          handleChange(field.name, e.target.value)
+                        }
+                      />
+                      {formData[field.name] && (
+                        <button
+                          type="button"
+                          onClick={() => setCurrentStep(1)}
+                          className="w-full bg-gradient-to-r from-blue-500 to-purple-500 p-3 text-white font-semibold rounded-xl flex items-center justify-center space-x-2 hover:scale-105 transition-all duration-300"
+                        >
+                          <span>Continue</span>
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  ) : (
+                    <select
+                      value={formData[field.name] || ""}
+                      onChange={(e) => {
+                        handleChange(field.name, e.target.value);
+                        if (currentStep < formFields.length - 1) {
+                          setCurrentStep(currentStep + 1);
+                        }
+                      }}
+                      className="w-full p-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                    >
+                      <option value="" disabled>
+                        {`Select ${field.label}`}
+                      </option>
+                      {field.options.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+              ))}
+
+              {currentStep === formFields.length - 1 && (
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-medium py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2"
+                >
+                  <span>Submit Assessment</span>
+                  <Target className="w-5 h-5" />
+                </button>
+              )}
+            </form>
+
+            <div className="mt-6 space-y-3">
+              <div className="flex justify-between items-center text-gray-400">
+                <span className="text-sm">
+                  Step {currentStep + 1} of {formFields.length}
+                </span>
+                <span className="text-sm">
+                  {Math.round(((currentStep + 1) / formFields.length) * 100)}%
+                  Complete
+                </span>
+              </div>
+              <div className="w-full h-2 bg-gray-700 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500"
+                  style={{
+                    width: `${((currentStep + 1) / formFields.length) * 100}%`,
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
