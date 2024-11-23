@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaCertificate } from "react-icons/fa";
+import axios from "axios";
 import {
   Brain,
   Trophy,
@@ -22,6 +23,8 @@ import {
 
 const CareerForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     logical_thinking: "",
@@ -276,8 +279,23 @@ const CareerForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log(formData);
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/recommend/predict/",
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log(response.data);
+      setSuccess(true);
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    }
   };
 
   return (
@@ -292,6 +310,15 @@ const CareerForm = () => {
           </div>
         </div>
         <div className="transition-all duration-1000">
+          {success ? (
+            <div className="bg-green-100 text-green-700 p-4 rounded-md mt-4">
+              Form submitted successfully!
+            </div>
+          ) : (
+            <div className="bg-red-100 text-red-700 p-4 rounded-md mt-4">
+              {error}
+            </div>
+          )}
           <form
             onSubmit={handleSubmit}
             className="space-y-6  h-[70vh] overflow-auto p-5 transition-all duration-1000"
