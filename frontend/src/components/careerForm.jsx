@@ -128,10 +128,10 @@ const CareerForm = () => {
       icon: <FaCertificate className="w-5 h-5" />,
       type: "select",
       options: [
-        { value: "app development", label: "App Development" },
-        { value: "web development", label: "Web Development" },
-        { value: "cloud computing", label: "Cloud Computing" },
-        { value: "data science", label: "Data Science" },
+        { value: 0, label: "App Development" },
+        { value: 1, label: "Web Development" },
+        { value: 2, label: "Cloud Computing" },
+        { value: 3, label: "Data Science" },
       ],
     },
     {
@@ -140,10 +140,10 @@ const CareerForm = () => {
       icon: <Cloud className="w-5 h-5" />,
       type: "select",
       options: [
-        { value: "cloud computing", label: "Cloud Computing" },
-        { value: "web development", label: "Web Development" },
-        { value: "mobile development", label: "Mobile Development" },
-        { value: "data analytics", label: "Data Analytics" },
+        { value: 0, label: "Cloud Computing" },
+        { value: 1, label: "Web Development" },
+        { value: 2, label: "Mobile Development" },
+        { value: 3, label: "Data Analytics" },
       ],
     },
     {
@@ -152,10 +152,10 @@ const CareerForm = () => {
       icon: <FileText className="w-5 h-5" />,
       type: "select",
       options: [
-        { value: "excellent", label: "Excellent" },
-        { value: "good", label: "Good" },
-        { value: "average", label: "Average" },
-        { value: "poor", label: "Poor" },
+        { value: 0, label: "Excellent" },
+        { value: 1, label: "Good" },
+        { value: 2, label: "Average" },
+        { value: 3, label: "Poor" },
       ],
     },
     {
@@ -164,10 +164,10 @@ const CareerForm = () => {
       icon: <MemoryIcon className="w-5 h-5" />,
       type: "select",
       options: [
-        { value: "excellent", label: "Excellent" },
-        { value: "good", label: "Good" },
-        { value: "average", label: "Average" },
-        { value: "poor", label: "Poor" },
+        { value: 0, label: "Excellent" },
+        { value: 1, label: "Good" },
+        { value: 2, label: "Average" },
+        { value: 3, label: "Poor" },
       ],
     },
     {
@@ -176,10 +176,10 @@ const CareerForm = () => {
       icon: <BookOpen className="w-5 h-5" />,
       type: "select",
       options: [
-        { value: "cloud computing", label: "Cloud Computing" },
-        { value: "software development", label: "Software Development" },
-        { value: "data science", label: "Data Science" },
-        { value: "cybersecurity", label: "Cybersecurity" },
+        { value: 0, label: "Cloud Computing" },
+        { value: 1, label: "Software Development" },
+        { value: 2, label: "Data Science" },
+        { value: 3, label: "Cybersecurity" },
       ],
     },
     {
@@ -189,12 +189,12 @@ const CareerForm = () => {
       type: "select",
       options: [
         {
-          value: "Business process analyst",
+          value: 0,
           label: "Business Process Analyst",
         },
-        { value: "Software Engineer", label: "Software Engineer" },
-        { value: "Data Scientist", label: "Data Scientist" },
-        { value: "Cloud Architect", label: "Cloud Architect" },
+        { value: 1, label: "Software Engineer" },
+        { value: 2, label: "Data Scientist" },
+        { value: 3, label: "Cloud Architect" },
       ],
     },
     {
@@ -203,10 +203,10 @@ const CareerForm = () => {
       icon: <Building className="w-5 h-5" />,
       type: "select",
       options: [
-        { value: "BPA", label: "Business Process Analysis" },
-        { value: "Tech", label: "Technology" },
-        { value: "Consulting", label: "Consulting" },
-        { value: "Product", label: "Product" },
+        { value: 0, label: "Business Process Analysis" },
+        { value: 1, label: "Technology" },
+        { value: 2, label: "Consulting" },
+        { value: 3, label: "Product" },
       ],
     },
     {
@@ -225,10 +225,10 @@ const CareerForm = () => {
       icon: <Book className="w-5 h-5" />,
       type: "select",
       options: [
-        { value: "Action and Adventure", label: "Action and Adventure" },
-        { value: "Technical", label: "Technical" },
-        { value: "Business", label: "Business" },
-        { value: "Self-Development", label: "Self-Development" },
+        { value: 0, label: "Action and Adventure" },
+        { value: 1, label: "Technical" },
+        { value: 2, label: "Business" },
+        { value: 3, label: "Self-Development" },
       ],
     },
     {
@@ -257,8 +257,8 @@ const CareerForm = () => {
       icon: <Settings className="w-5 h-5" />,
       type: "select",
       options: [
-        { value: "Management", label: "Management" },
-        { value: "Technical", label: "Technical" },
+        { value: 0, label: "Management" },
+        { value: 1, label: "Technical" },
       ],
     },
     {
@@ -267,15 +267,33 @@ const CareerForm = () => {
       icon: <Hammer className="w-5 h-5" />,
       type: "select",
       options: [
-        { value: "smart worker", label: "Smart Worker" },
-        { value: "hard worker", label: "Hard Worker" },
+        { value: 0, label: "Smart Worker" },
+        { value: 1, label: "Hard Worker" },
       ],
     },
   ];
 
   const handleChange = (name, value) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
-    // Only advance to next step if it's not the name field
+    const field = formFields.find((field) => field.name === name);
+    let formattedValue = value;
+
+    // Check if the field is a select type
+    if (field.type === "select") {
+      // For Yes/No selects, convert "Yes" to 1 and "No" to 0
+      if (
+        name === "self_learning" ||
+        name === "extra_course" ||
+        name === "senior_elder_advise" ||
+        name === "introvert_extro" ||
+        name === "team_player"
+      ) {
+        formattedValue = value === "Yes" ? "1" : "0";
+      }
+    }
+
+    setFormData((prev) => ({ ...prev, [name]: formattedValue }));
+
+    // Only advance to the next step if it's not the name field
     if (name !== "name" && currentStep < formFields.length - 1) {
       setCurrentStep((prev) => prev + 1);
     }

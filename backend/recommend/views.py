@@ -4,6 +4,7 @@ import json
 import joblib
 from .models import Career, Roadmap, Resource
 import datetime
+import re
 
 # Load the pre-trained model
 model = joblib.load('../rfweights.pkl')
@@ -36,67 +37,77 @@ def create_entries(request):
                 data.get('subject_interest'),
                 data.get('team_player'),
                 data.get('worskhop_code'),
-                data.get('name'),  # Include name even if not used
-                '/api_name'  # Include api_name even if not used
+                '8',  # Placeholder values
+                '8'
             ]
 
             print("Features: ", features)
 
-            # Convert features to float where applicable
-            numerical_features = [float(f) if isinstance(
-                f, (int, float)) else 0 for f in features]
-
-            print("Numerical Features: ", numerical_features)
-
             # Predict using the model
-            output = model.predict([numerical_features])
-            predicted_career = output[0]
+            output = model.predict([features])
+            predicted_career = output[0].strip()
             print("Career Suggested: ", predicted_career)
-            # Assuming you want the top 4 suggestions
-            # all_suggestions = output[:3]
-            # print("All Suggestions: ", all_suggestions)
+
+            # Normalize the predicted career
+            normalized_predicted_career = normalize_string(predicted_career)
+            print("Normalized Predicted Career: ", normalized_predicted_career)
 
             # Check if the predicted career exists in the Career table
-            try:
-                career_details = Career.objects.filter(name=predicted_career)
-                if not career_details.exists():
-                    return JsonResponse({'error': 'Career not found in the database'}, status=404)
+            career_details = Career.objects.all()
+            matched_career = None
 
-                career_details = career_details.first()
-                roadmap_details = Roadmap.objects.filter(
-                    career_id=career_details.id)
-                resource_details = Resource.objects.filter(
-                    career_id=career_details.id)
+            for career in career_details:
+                normalized_career_name = normalize_string(career.name)
+                print("Career Name: ", career.name)
+                print("Normalized Career Name: ", normalized_career_name)
+                if normalized_career_name == normalized_predicted_career:
+                    matched_career = career
+                    break
 
-                roadmap_list = []
-                for roadmap in roadmap_details:
-                    time_to_complete_days = roadmap.time_to_complete.microseconds
-                    roadmap_dict = {
-                        'id': roadmap.id,
-                        'career_id': roadmap.career_id,
-                        'stage_name': roadmap.stage_name,
-                        'description': roadmap.description,
-                        'skills_required': roadmap.skills_required,
-                        'time_to_complete': time_to_complete_days
-                    }
-                    roadmap_list.append(roadmap_dict)
-
-                response_data = {
-                    'career': {
-                        'name': career_details.name,
-                        'description': career_details.description,
-                        'average_salary': career_details.average_salary,
-                        'required_skills': career_details.required_skills,
-                        'related_roadmap': career_details.related_roadmap,
-                    },
-                    'roadmap': roadmap_list,
-                    'resources': list(resource_details.values())
-                }
-                print("Response: ", response_data["roadmap"])
-                return JsonResponse(response_data)
-            except Career.DoesNotExist:
+            if not matched_career:
                 return JsonResponse({'error': 'Career not found in the database'}, status=404)
 
+            # Retrieve roadmap and resource details
+            roadmap_details = Roadmap.objects.filter(
+                career_id=matched_career.id)
+            resource_details = Resource.objects.filter(
+                career_id=matched_career.id)
+
+            roadmap_list = []
+            for roadmap in roadmap_details:
+                roadmap_dict = {
+                    'id': roadmap.id,
+                    'career_id': roadmap.career_id,
+                    'stage_name': roadmap.stage_name,
+                    'description': roadmap.description,
+                    'skills_required': roadmap.skills_required,
+                    'time_to_complete': roadmap.time_to_complete.microseconds
+                }
+                roadmap_list.append(roadmap_dict)
+
+            response_data = {
+                'career': {
+                    'name': matched_career.name,
+                    'description': matched_career.description,
+                    'average_salary': matched_career.average_salary,
+                    'required_skills': matched_career.required_skills,
+                    'related_roadmap': matched_career.related_roadmap,
+                },
+                'roadmap': roadmap_list,
+                'resources': list(resource_details.values())
+            }
+
+            print("Response: ", response_data)
+            return JsonResponse(response_data)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
+
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+
+def normalize_string(s):
+    """Normalize a string by removing special characters and converting to lowercase."""
+    return re.sub(r'\W+', '', s).lower().strip()
