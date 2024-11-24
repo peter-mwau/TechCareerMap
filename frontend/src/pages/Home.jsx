@@ -102,7 +102,7 @@ const Home = () => {
           </div>
         </section>
 
-        <section className="mb-20 bg-gray-800/50 p-12 rounded-2xl border border-gray-700">
+        <section className="pb-20 bg-gray-800/50 p-12 rounded-2xl border border-gray-700">
           <div className="text-center max-w-3xl mx-auto">
             <h2 className="text-3xl font-semibold mb-6">
               Ready to Find Your Perfect Tech Career?
