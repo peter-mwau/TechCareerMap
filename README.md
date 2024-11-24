@@ -131,6 +131,21 @@ python manage.py runserver
 - Ensure both the frontend and backend servers are running.
 - Open your browser and navigate to http://localhost:5173 to access the application.
 
+### Homepage
+
+- This is how the homepage will look like:
+  ![Database Configuration](frontend/public/Homepage.png)
+
+### CareerForm
+
+- This is how the CareerForm will look like:
+  ![CareerForm](frontend/public/CareerForm.png)
+
+### Roadmap
+
+- This is how the Roadmap will look like:
+  ![Roadmap](frontend/public/Roadmap.png)
+
 ### Usage
 
 - Fill out the questionnaire with your interests, passions, personalities, and current skills.
