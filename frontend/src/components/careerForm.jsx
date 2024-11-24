@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaCertificate } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   Brain,
@@ -27,6 +28,7 @@ const CareerForm = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
     logical_thinking: "",
@@ -294,6 +296,9 @@ const CareerForm = () => {
 
       console.log(response.data);
       setSuccess(true);
+      setTimeout(() => {
+        navigate("/roadmap", { state: { data: response.data } });
+      }, 2000);
     } catch (err) {
       console.error(err);
       setError(err.message);
@@ -352,7 +357,7 @@ const CareerForm = () => {
                     <div className="space-y-3">
                       <input
                         type="text"
-                        className="w-full p-3 bg-gray-900/50 border border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white transition-all duration-300"
+                        className="w-full p-3 bg-gray-900/50 border border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white transition-all duration-300 required"
                         placeholder={field.placeholder}
                         value={formData[field.name] || ""}
                         onChange={(e) =>
@@ -379,7 +384,7 @@ const CareerForm = () => {
                           setCurrentStep(currentStep + 1);
                         }
                       }}
-                      className="w-full p-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                      className="w-full p-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 required"
                     >
                       <option value="" disabled>
                         {`Select ${field.label}`}
